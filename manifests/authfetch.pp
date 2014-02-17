@@ -16,6 +16,8 @@ define wget::authfetch (
   $redownload         = false,
   $nocheckcertificate = false,
   $execuser           = undef,
+  $nocookies          = false,
+  $cookie					    = undef,
 ) {
 
   notice("wget::authfetch is deprecated, use wget::fetch with user/password params")
@@ -28,6 +30,8 @@ define wget::authfetch (
     redownload         => $redownload,
     nocheckcertificate => $nocheckcertificate,
     execuser           => $execuser,
+    nocookies          => $nocookies,
+    cookie             => $cookie,
     user               => $user,
     password           => $password,
   }

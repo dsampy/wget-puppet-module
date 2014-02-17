@@ -13,6 +13,8 @@ define wget::fetch (
   $redownload         = false,
   $nocheckcertificate = false,
   $execuser           = undef,
+  $nocookies          = false,
+  $cookie             = undef,
   $user               = undef,
   $password           = undef,
 ) {
@@ -55,6 +57,16 @@ define wget::fetch (
     default => " --user=${user}",
   }
 
+  $nocookies_option = $nocookies ? {
+    true  => ' --no-cookies',
+    false => ''
+  }
+
+  $cookie_option = $cookie ? {
+    undef   => '',
+    default => " --header 'Cookie: ${cookie}'"
+  }
+
   if $user != undef {
     $wgetrc_content = $::operatingsystem ? {
       # This is to work around an issue with macports wget and out of date CA cert bundle.  This requires
@@ -74,7 +86,7 @@ define wget::fetch (
   }
 
   exec { "wget-${name}":
-    command     => "wget ${verbose_option}${nocheckcert_option}${user_option} --output-document='${destination}' '${source}'",
+    command     => "wget ${verbose_option}${nocheckcert_option}${nocookies_option}${cookie_option}${user_option} --output-document='${destination}' '${source}'",
     timeout     => $timeout,
     unless      => $unless_test,
     environment => $environment,
